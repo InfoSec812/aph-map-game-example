@@ -62,17 +62,17 @@ export default {
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     };
   },
-  mounted: function() {
+  mounted: function() { // When this component is mounted into the Virtual DOM, execute the `getLocation` method
     this.getLocation();
   },
   methods: {
-    getLocation() {
+    getLocation() { // Try to get the geolocation from the browser and if successful pass the location data to the `updateLocation` callback
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(this.updateLocation);
         }
     },
-    updateLocation(position) {
-      this.latitude = position.coords.latitude*100001;
+    updateLocation(position) {  // Update the lat/long of the map view using the provided location data
+      this.latitude = position.coords.latitude*100000;
       this.longitude = position.coords.longitude*100000;
     },
     zoomUpdate(zoom) {
