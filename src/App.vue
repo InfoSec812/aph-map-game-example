@@ -1,17 +1,26 @@
 <template>
   <div>
     <div class="map_canvas">
-      <l-map
-        :zoom="zoom"
-        :center="mapCenter"
-        preferCanvas="false"
-        @update:center="centerUpdate"
-        @update:zoom="zoomUpdate">
-        <l-tile-layer
-          :url="url"
-          :attribution="attribution"/>
-      </l-map>
+      <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
+        <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation"></vl-view>
+
+        <vl-geoloc @update:position="geolocPosition = $event">
+          <template slot-scope="geoloc">
+            <vl-feature v-if="geoloc.position" id="position-feature">
+              <vl-geom-point :coordinates="geoloc.position"></vl-geom-point>
+              <vl-style-box>
+                <vl-style-icon src="_media/marker.png" :scale="0.4" :anchor="[0.5, 1]"></vl-style-icon>
+              </vl-style-box>
+            </vl-feature>
+          </template>
+        </vl-geoloc>
+
+        <vl-layer-tile id="osm">
+          <vl-source-osm></vl-source-osm>
+        </vl-layer-tile>
+      </vl-map>
     </div>
+    <!-- <div class="overlay"></div> -->
   </div>
 </template>
 <style>
@@ -27,22 +36,15 @@
   z-index: 1000;
   height: 100vh;
   width: 100vw;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.3);
   position: absolute;
   top: 0px;
   left: 0px;
 }
 </style>
-
 <script>
-import { LMap, LTileLayer } from "vue2-leaflet";
-
 export default {
   name: "App",
-  components: {
-    LMap,
-    LTileLayer
-  },
   computed: {
     mapCenter: function() {
       var latVal = this.latitude / 100000;
@@ -52,6 +54,11 @@ export default {
   },
   data() {
     return {
+      leafletOptions: {
+        zoomControl: false,
+        rotate: true,
+        bearing: 40
+      },
       zoom: 18,
       latitude: 3829759,
       longitude: -8567645,

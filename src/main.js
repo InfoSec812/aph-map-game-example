@@ -8,16 +8,13 @@ import "quasar-framework/dist/quasar.ie.polyfills";
 import "quasar-extras/roboto-font";
 import "quasar-extras/material-icons";
 import Quasar from "quasar";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { Map, TileLayer, OsmSource, Geoloc } from "vuelayers";
+import "vuelayers/lib/style.css"; // needs css-loader;
 
-delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-  iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png")
-});
+Vue.use(Map);
+Vue.use(TileLayer);
+Vue.use(OsmSource);
+Vue.use(Geoloc);
 
 Vue.use(Quasar, {
   config: {}
